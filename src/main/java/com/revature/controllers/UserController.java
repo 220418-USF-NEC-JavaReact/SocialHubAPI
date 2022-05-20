@@ -8,14 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private UserService us;
@@ -36,6 +35,11 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user")
+    public User getCurrentUser(@RequestParam(name="id")int id){
+        return us.getCurrentUserById(id);
+    }
+
     @PostMapping("/user/login")
     public ResponseEntity<Object> handleLoginUser(@RequestBody LinkedHashMap<String, String> body){
 
@@ -47,6 +51,21 @@ public class UserController {
         } catch(InvalidCredentialsException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @PutMapping("/user/follow")
+    public User handleFollowUser(@RequestParam(name="user")int user, @RequestParam(name="toFollow")int toFollow){
+        return us.followUser(user, toFollow);
+    }
+
+    @GetMapping("/users/followers/{id}")
+    public Set<User> getUserFollowers(@PathVariable("id")int id){
+        return us.getCurrentUserById(id).getFollowers();
+    }
+
+    @GetMapping("/users/following/{id}")
+    public Set<User> getUserFollowing(@PathVariable("id")int id){
+        return us.getCurrentUserById(id).getFollowing();
     }
 
 }
