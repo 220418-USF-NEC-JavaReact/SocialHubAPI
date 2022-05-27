@@ -17,3 +17,5 @@ Testing Jenkins 8
 Testing Jenkins 9
 
 Testing Jenkins 10
+
+Testing SonarCube
